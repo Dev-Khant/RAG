@@ -1,7 +1,6 @@
 from operator import itemgetter
 
 from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
-from langchain_openai import ChatOpenAI
 from langchain.prompts import PromptTemplate
 from langchain.schema import format_document
 from langchain.output_parsers import ResponseSchema, StructuredOutputParser
@@ -239,7 +238,7 @@ def load_and_create_vectordb(file_path):
         chunked_documents,
         embeddings,
         redis_url="redis://:iNESPERehibl@54.169.182.244:6379",
-        index_name="st_test_123",
+        index_name="final_st_test_123",
         
     )
     print("VectorDB Ready!")
