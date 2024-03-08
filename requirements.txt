@@ -1,0 +1,10 @@
+flask 
+langchain
+langchain_core
+langchain_google_genai
+langchain_community
+pypdf
+chromadb
+sentence-transformers==2.2.2
+tiktoken
+redis
