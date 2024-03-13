@@ -1,30 +1,16 @@
-from langchain_experimental.agents.agent_toolkits import create_csv_agent
-from langchain_google_genai import ChatGoogleGenerativeAI
-
-# from langchain.agents import create_csv_agent
-from langchain.agents.agent_types import AgentType
+import json
 from datetime import datetime
 import streamlit as st
-
-
-GEMINI_KEY="AIzaSyDzzRUVOxOfk3A1F1gWV7_pJX4q4jUeTGg"
-
+from utils.chains import RAG, load_and_create_vectordb
 
 ALLOWED_HOSTS = ['*']
 chat_data = []
 
 @st.cache_resource() # Cache the result of this function
-def init_agent():
-    csv_google_agent = create_csv_agent(ChatGoogleGenerativeAI(model="gemini-pro", 
-                                                    google_api_key=GEMINI_KEY,
-                                                    temperature=0
-                                                    ), 
-        "search_contents_2024-02-07.csv",
-        verbose=True,
-        agent_type=AgentType.ZERO_SHOT_REACT_DESCRIPTION)
-    return csv_google_agent
+def init_vectordb():
+    return load_and_create_vectordb("lancome.txt")
 
-csv_agent = init_agent()
+new_rds = init_vectordb()
 
 def main():
     st.title("AI Chatbot")
@@ -42,16 +28,35 @@ def generate_response(query):
         global chat_data
 
         start_time = datetime.now()
-        result = csv_agent.run(query)
-        end_time = datetime.now()
 
+
+        print("Initializing RAG")
+        rag = RAG(llm_name="gemini-pro", temperature=0, vector_db=new_rds, results_to_retrieve=3, max_tokens=400)
+        rag_chain = rag.run()
+
+        with open("chat_history.json", "r") as file:
+            json_content = file.read()
+        chat_data = json.loads(json_content)
+
+        if len(chat_data) > 2:
+            msg_history = chat_data[-2:]
+        else:
+            msg_history = chat_data
+
+        result = rag_chain.invoke({"question": query, "query_language": "Chinese", "chat_history": msg_history})
+
+        end_time = datetime.now()
         print("Answer Ready!")
         print(f"Time took: {end_time - start_time}")
+
+        msg_history.append({"Human": query, "AI": result['chain_output']})
+        with open("chat_history.json", "w") as file:
+            json.dump(msg_history, file)
 
         
         st.write("---")
         st.write(f"Human: ", query)
-        st.write(f"AI:", result)
+        st.write(f"AI:", result["chain_output"])
         st.write("---")
 
     except Exception as e:
