@@ -233,8 +233,8 @@ def load_and_create_vectordb(file_path):
     )
     chunked_documents = text_splitter.split_documents(docs)
 
-    embeddings = HuggingFaceHubEmbeddings(model="sentence-transformers/all-MiniLM-L6-v2")
-    # embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key="AIzaSyBdkNFydYo6kl0809OqjHZVD7zHuCw6LFA")
+    # embeddings = HuggingFaceHubEmbeddings(model="sentence-transformers/all-MiniLM-L6-v2")
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key="AIzaSyBdkNFydYo6kl0809OqjHZVD7zHuCw6LFA")
     rds = Redis.from_documents(
         chunked_documents,
         embeddings,
