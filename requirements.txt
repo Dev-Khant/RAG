@@ -9,3 +9,4 @@ pypdf
 # tiktoken
 # redis
 langchain_experimental
+tabulate
