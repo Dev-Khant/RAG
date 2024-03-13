@@ -10,6 +10,7 @@ from langchain_community.vectorstores import Chroma, Qdrant, Redis
 from langchain_community.embeddings import HuggingFaceHubEmbeddings
 
 from langchain.tools.retriever import create_retriever_tool
+from langchain_community.document_loaders import TextLoader
 
 from langchain_core.messages import get_buffer_string
 from langchain_core.chat_history import BaseChatMessageHistory
@@ -215,7 +216,7 @@ class RAG:
 
 
 def load_and_create_vectordb(file_path):
-    loader = PyPDFLoader(file_path)
+    loader = TextLoader(file_path)
     docs = loader.load_and_split()
 
     # text_splitter = RecursiveCharacterTextSplitter(
@@ -227,18 +228,18 @@ def load_and_create_vectordb(file_path):
 
     text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
         model_name="gpt-3.5-turbo-1106",
-        chunk_size=500,
-        chunk_overlap=50,
+        chunk_size=800,
+        chunk_overlap=80,
     )
     chunked_documents = text_splitter.split_documents(docs)
 
-    # embeddings = HuggingFaceHubEmbeddings(model="sentence-transformers/all-MiniLM-L6-v2")
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key="AIzaSyBdkNFydYo6kl0809OqjHZVD7zHuCw6LFA")
+    embeddings = HuggingFaceHubEmbeddings(model="sentence-transformers/all-MiniLM-L6-v2")
+    # embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key="AIzaSyBdkNFydYo6kl0809OqjHZVD7zHuCw6LFA")
     rds = Redis.from_documents(
         chunked_documents,
         embeddings,
         redis_url="redis://:iNESPERehibl@54.169.182.244:6379",
-        index_name="final_st_test_123",
+        index_name="testing_chense_123_final",
         
     )
     print("VectorDB Ready!")
