@@ -239,7 +239,7 @@ def load_and_create_vectordb(file_path):
         chunked_documents,
         embeddings,
         redis_url="redis://:iNESPERehibl@54.169.182.244:6379",
-        index_name="testing_chense_123_final",
+        index_name="testing_chense_123_final_1234",
         
     )
     print("VectorDB Ready!")
