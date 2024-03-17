@@ -238,7 +238,7 @@ def load_and_create_vectordb(file_path):
     rds = Redis.from_documents(
         chunked_documents,
         embeddings,
-        redis_url="redis://:iNESPERehibl@54.169.182.244:6379",
+        redis_url="",
         index_name="testing_chense_123_final_1234",
         
     )
